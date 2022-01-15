@@ -10,7 +10,7 @@ import pylab as py
 import matplotlib.colors as colors
 
 # "Import" the file properly
-fileName='a6Cali-Big'
+fileName='H2_NiI-FORC'
 # The next is the first tried file. Don't change!
 #f = pd.read_csv('niNWsInMembraneFORC5kOe_3', header=None, skiprows=85, skipfooter=1, skip_blank_lines=False, engine='python', keep_default_na=False, na_values=[''])
 f = pd.read_csv(fileName, header=None, skiprows=85, skipfooter=2, skip_blank_lines=False, engine='python', keep_default_na=False, na_values=[''])
@@ -36,10 +36,10 @@ Ha = []
 Hb = []
 
 # Take from measurement parameters
-Hcal = +6.72E+03 # calibration field. Take the one from the data, not the header
-HNcr = +97.70125E+00 # Field increment step
-Hbmin = -6.073084E+03
-Hbmax = +6.7E+03
+Hcal = +7.27E+03 # calibration field. Take the one from the data, not the header
+HNcr = +103.4484E+00 # Field increment step
+Hbmin = -6.586120E+03 
+Hbmax = +7.2E+03
 
 # create an artificial list for Hb
 Hbp = np.arange(Hbmin, Hbmax, HNcr)
@@ -48,7 +48,7 @@ nForc = 0
 x = 0
 # From the datafile save Hb and Ha
 for row in f.itertuples():  
-#	print row[0], row[1] # iterates over all rows on each column
+#	print(row[0], row[1]) # iterates over all rows on each column
 	# This itertuples returns strings!
 	if np.isnan(row[1]) == False:
 		if float(row[0]) < Hcal: # Ignore calibration field lines
@@ -82,9 +82,9 @@ Hb2 = Hb2 + [Hb[len(Hb)-1]]
 Hb2.sort()
 #plt.plot(dife)
 
-#print len(Ha), nForc-1, len(Hb2)
-#print 'Ha: ', Ha
-#print 'Hb: ', Hb2
+#print( len(Ha), nForc-1, len(Hb2))
+#print( 'Ha: ', Ha)
+#print( 'Hb: ', Hb2)
 #plt.plot(Ha)
 #plt.plot(Hb2)
 #plt.show()
@@ -99,11 +99,11 @@ for row in f.itertuples():
 		if float(row[0]) < Hcal:
 		#if abs(float(row[0])) < Hcal:
 			if m == []:
-#				print float(row[0])
+#				print( float(row[0]))
 				for j in range(len(Hb2)): 
 					del2 = abs(float(row[0]) - Hb2[j])
 					if del2 < 5.0:
-#						print del2, float(row[0]), Hb2[j], float(row[1]), len(m)
+#						print( del2, float(row[0]), Hb2[j], float(row[1]), len(m))
 						l += 1
 						break
 					else:
@@ -112,7 +112,7 @@ for row in f.itertuples():
 			m = m + [float(row[1])]
 			l += 1
 			lastm = m[:] # this is higly inefficient
-			#print m
+			#print(m)
 		elif l != 0:
 			for j in range(len(Hb2)-l+1):
 				m = m + [0.0]
@@ -126,23 +126,23 @@ M.append(lastm) # if its stupid but it works...
 
 M.reverse() # Because Ha and Hb are sorted from min to max
 
-#print 'M[0]: ', M[0], 'Len M: ', len(M)
-#print 'M[last]', M[len(Ha)-1] 
+#print( 'M[0]: ', M[0], 'Len M: ', len(M))
+#print( 'M[last]', M[len(Ha)-1] )
 #plt.plot(Hb2, M[0])
 #print len(M)
 
-print 'Check: all dimmensions should match'
-print 'len(Ha) = len(M) = nForc-1; len(M[i]) = len(Hb)'
-print 'Ha: ', len(Ha)
-print 'nFORCS: ', nForc-1
-print 'M: ', len(M)
-print 'Hb: ', len(Hb2)
-print 'm: ', len(M[0])
+print( 'Check: all dimmensions should match')
+print( 'len(Ha) = len(M) = nForc-1; len(M[i]) = len(Hb)')
+print( 'Ha: ', len(Ha))
+print( 'nFORCS: ', nForc-1)
+print( 'M: ', len(M))
+print( 'Hb: ', len(Hb2))
+print( 'm: ', len(M[0]))
 
 # For the contour plots
 cmin = 0.0
-cmax = 2.5e-6
-cstep = 1.0e-8
+cmax = 2.0e-8
+cstep = 1.0e-10
 cdpi = 300
 
 # This plots the magnetization correclty 
@@ -223,7 +223,7 @@ def subGrid(Hb, Ha, M, SF, i, j):
 #sHb, sHa, sM = subGrid(Hb2, Ha, M, 3, 65, 45)
 #plotM(Hb2, Ha, M, 'Magnetization (emu)')
 #plotM(sHb, sHa, sM, 'Magnetization (emu) - SubGrid')
-#print sM
+#print( sM)
 #plt.show()
 #raw_input()
 
@@ -283,8 +283,8 @@ def chanCoord(Hb, Ha, M):
 	return Hc, Hu, Mv
 
 #Hc, Hu, Mv = chanCoord(Hb2, Ha, M)
-#print 'Hc, Hu, Mv'
-#print len(Hc), len(Hu), len(Mv)
+#print( 'Hc, Hu, Mv')
+#print( len(Hc), len(Hu), len(Mv))
 #plotMR(Hc, Hu, Mv, 'New Coords')
 
 # Now I have to iterate on all the points and save -C[3] as an array like M
@@ -300,7 +300,7 @@ def forc(Hb, Ha, M, SF):
 				C, mm = surfFit(sHb, sHa, sM)
 				#px.append(-C[3])
 				px.append(-0.5*C[3]) # Vazquez
-				mmx.append(mm[len(sHa)/2][len(sHb)/2])
+				mmx.append(mm[len(sHa)//2][len(sHb)//2]) # integer division (like in python 2.7)
 			else:
 				px.append(0.0)
 				mmx.append(0.0)
@@ -343,5 +343,5 @@ plotMR(pHc4, pHu4, pv4, 'FORC SF=4')
 #plotM(Hb2, Ha, p3, 'FORC SF=3')
 #plotM(Hb2, Ha, mm3, 'MFIT SF=3')
 
-print 'DONE!'
+print('DONE!')
 #plt.show()
